@@ -101,8 +101,6 @@ Most transaction system demos run on cloud VMs with unlimited resources.
 - 🔹 **Production Patterns** - Health checks, Helm, CI/CD, structured logging
 - 🔹 **Real Hardware** - Not a simulation; actual deployment on physical device
 
-This proves I can build systems that work anywhere—from cloud to edge.
-
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -134,7 +132,7 @@ helm install transaction-system ./helm/transaction-system \
 
 # Wait for pods to be ready
 kubectl wait --for=condition=ready pod -l app=transaction-api -n transactions --timeout=120s
-Test the API
+# Test the API
 bash
 # Port forward to local machine
 kubectl port-forward -n transactions service/transaction-api 8080:8080 &
@@ -154,14 +152,18 @@ curl -X POST http://localhost:8080/api/transactions \
 
 # List all transactions
 curl http://localhost:8080/api/transactions
+
 📊 API Reference
+
 Method	Endpoint	Description	Response
 GET	/api/transactions	List all transactions (paginated)	200 OK with array
 GET	/api/transactions/{id}	Get specific transaction	200 OK or 404
 POST	/api/transactions	Create new transaction	201 Created
 DELETE	/api/transactions/{id}	Delete transaction	204 No Content
 GET	/api/transactions/health	Health check for Kubernetes	200 OK
+
 🧪 Testing
+
 bash
 # Run all unit tests
 dotnet test
@@ -170,7 +172,9 @@ dotnet test
 
 # Run with coverage
 dotnet test --collect:"XPlat Code Coverage"
+
 📦 Helm Commands
+
 bash
 # Install
 helm install transaction-system ./helm/transaction-system -n transactions --create-namespace
@@ -187,7 +191,9 @@ helm uninstall transaction-system -n transactions
 # View status
 helm status transaction-system -n transactions
 helm get values transaction-system -n transactions
+
 🔧 Local Development
+
 Run with Docker Compose
 bash
 docker compose up -d
@@ -233,7 +239,9 @@ transaction-system-local/
 │   └── dotnet-build.yml
 ├── docker-compose.yml
 └── README.md
+
 🔍 Monitoring & Debugging
+
 bash
 # View pods
 kubectl get pods -n transactions
@@ -247,40 +255,38 @@ kubectl describe pod -n transactions -l app=transaction-api
 
 # Port forward
 kubectl port-forward -n transactions service/transaction-api 8080:8080
+
 🐛 Troubleshooting
+
 Pods not starting
 bash
 kubectl describe pod -n transactions <pod-name>
 kubectl logs -n transactions <pod-name> --previous
+
 Database connection issues
 bash
 kubectl exec -n transactions postgres-xxx -- pg_isready
 kubectl logs -n transactions postgres-xxx
+
 Port forward not working
 bash
 pkill -f "kubectl port-forward"
 kubectl port-forward -n transactions service/transaction-api 8081:8080
+
 📈 Future Improvements
+
 Add Prometheus + Grafana monitoring
-
 Implement JWT authentication
-
 Add Redis caching
-
 Create message queue with RabbitMQ
-
 Add end-to-end tests
-
 Deploy to cloud (AKS/EKS)
 
 👤 Author
 Bikash Chhetri
 Senior Software Engineer | Embedded Systems & Fintech
-
 7+ years: C# .NET, C++, Azure, Payment Systems
-
 Embedded + cloud-native architectures
-
 Built: EFT-POS integrations, card issuance kiosks, RTOS payment terminals
 
 🔗 **GitHub:** [github.com/krishnasbyte](https://github.com/krishnasbyte)  
