@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transaction-api
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: transaction-api
+  template:
+    metadata:
+      labels:
+        app: transaction-api
+    spec:
+      containers:
+      - name: transaction-api
+        image: {{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}
+        imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.api.service.targetPort }}
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: {{ .Values.api.environment.ASPNETCORE_ENVIRONMENT }}
+        - name: ConnectionStrings__DefaultConnection
+          value: "Host=postgres;Port=5432;Database={{ .Values.postgres.database }};Username={{ .Values.postgres.user }};Password={{ .Values.postgres.password }}"
+        resources:
+          {{- toYaml .Values.api.resources | nindent 10 }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.api.healthCheck.path }}
+            port: {{ .Values.api.service.targetPort }}
+          initialDelaySeconds: {{ .Values.api.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.api.healthCheck.periodSeconds }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.api.healthCheck.path }}
+            port: {{ .Values.api.service.targetPort }}
+          initialDelaySeconds: 10
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transaction-api
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: transaction-api
+  ports:
+  - port: {{ .Values.api.service.port }}
+    targetPort: {{ .Values.api.service.targetPort }}
+  type: {{ .Values.api.service.type }}

@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: transaction-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: MyP@ssw0rd
+      POSTGRES_DB: transactiondb
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    network_mode: host
+    restart: unless-stopped
+
+  transaction-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: transaction-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=transactiondb;Username=admin;Password=MyP@ssw0rd"
+    depends_on:
+      - postgres
+    network_mode: host
+    restart: unless-stopped
+
+  processor-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.processor
+    container_name: processor-service
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=transactiondb;Username=admin;Password=MyP@ssw0rd"
+    depends_on:
+      - postgres
+      - transaction-api
+    network_mode: host
+    restart: unless-stopped
+
+volumes:
+  postgres-data:

@@ -1,0 +1,12 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/Tests/
+**/k8s/
+**/helm/
+.git/
+.gitignore
+README.md
+docker-compose.yml
+.DS_Store

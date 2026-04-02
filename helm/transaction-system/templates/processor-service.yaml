@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: processor-service
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.processor.replicas }}
+  selector:
+    matchLabels:
+      app: processor-service
+  template:
+    metadata:
+      labels:
+        app: processor-service
+    spec:
+      containers:
+      - name: processor-service
+        image: {{ .Values.processor.image.repository }}:{{ .Values.processor.image.tag }}
+        imagePullPolicy: {{ .Values.processor.image.pullPolicy }}
+        env:
+        - name: ConnectionStrings__DefaultConnection
+          value: "Host=postgres;Port=5432;Database={{ .Values.postgres.database }};Username={{ .Values.postgres.user }};Password={{ .Values.postgres.password }}"
+        resources:
+          {{- toYaml .Values.processor.resources | nindent 10 }}

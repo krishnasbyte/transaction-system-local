@@ -1,0 +1,59 @@
+# Default values for transaction-system
+
+# Global settings
+namespace: transactions
+replicaCount: 2
+
+# Transaction API settings
+api:
+  image:
+    repository: transaction-api
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "500m"
+  healthCheck:
+    path: /api/transactions/health
+    initialDelaySeconds: 30
+    periodSeconds: 10
+  environment:
+    ASPNETCORE_ENVIRONMENT: Production
+
+# Processor Service settings
+processor:
+  image:
+    repository: processor-service
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicas: 1
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "500m"
+
+# PostgreSQL settings
+postgres:
+  image: postgres:15
+  user: admin
+  password: MyP@ssw0rd
+  database: transactiondb
+  storage: 5Gi
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"

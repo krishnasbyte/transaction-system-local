@@ -11,4 +11,19 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TransactionApi\TransactionApi.csproj" />
+  </ItemGroup>
+
+  <!-- EXCLUDE APPSETTINGS FILES FROM PUBLISH TO PREVENT CONFLICTS -->
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </Content>
+    <Content Update="appsettings.Development.json">
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
